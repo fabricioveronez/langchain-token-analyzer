@@ -112,12 +112,20 @@ O relatório será gerado em `results/report.md`
 ├── README.md              # Este arquivo
 ├── requirements.txt       # Dependências Python
 ├── .env.example          # Template de configuração
-├── main.py               # Script principal
-├── prompts_pt.json       # Prompts em português
-├── prompts_en.json       # Prompts em inglês
+├── main.py               # Script principal de orquestração
+├── prompts.py            # Gerenciamento de prompts
+├── llms.py               # Modelos LLM e callbacks
+├── report.py             # Geração de relatórios
 └── results/              # Relatórios gerados
     └── report.md
 ```
+
+### Módulos
+
+- **main.py**: Orquestra a execução dos testes, validando ambiente e coordenando a execução dos modelos
+- **prompts.py**: Define e gerencia prompts em múltiplos idiomas usando dataclasses Python
+- **llms.py**: Implementa factory para criação de modelos LLM, callbacks para captura de tokens e função de execução
+- **report.py**: Calcula estatísticas de tokens e gera relatórios formatados em Markdown
 
 ## Conceitos Principais
 
