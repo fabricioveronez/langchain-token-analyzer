@@ -14,9 +14,32 @@ Este repositório é composto de pastas numeradas, onde cada pasta contém um pr
 
 | # | Projeto | Descrição |
 |---|---------|-----------|
-| | Em desenvolvimento... | |
+| 01 | [langchain-token-analysis](./01-langchain-token-analysis/) | Análise de tokens com LangChain comparando modelos Claude e Gemini em PT/EN |
 
 ## Como Usar
+
+### Opção 1: Dev Container (Recomendado)
+
+Este repositório está configurado para usar **Dev Containers**, facilitando a configuração do ambiente de desenvolvimento.
+
+**Pré-requisitos**:
+- Docker instalado e em execução
+- Visual Studio Code
+- Extensão "Dev Containers" instalada no VS Code
+
+**Passos**:
+1. Abra o repositório no VS Code
+2. Quando aparecer o prompt "Reopen in Container", clique em "Reopen in Container"
+3. Aguarde a construção do container (primeira vez pode demorar alguns minutos)
+4. Navegue até o projeto desejado e siga as instruções do README específico
+
+**Vantagens**:
+- Ambiente Python padronizado (3.11)
+- Não precisa instalar Python localmente
+- Extensões do VS Code pré-configuradas
+- Isolamento completo de dependências
+
+### Opção 2: Instalação Local
 
 1. Navegue até a pasta do projeto desejado
 2. Leia o README específico do projeto

@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+
+# Ambiente
+.env
+*.env
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Resultados de projetos
+*/results/*.md
+*/results/*.json
+*/results/*.png
+*/results/*.html
+!*/results/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db

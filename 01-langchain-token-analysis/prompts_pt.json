@@ -1,0 +1,10 @@
+{
+  "prompts": [
+    {
+      "id": "medium_1",
+      "category": "medium",
+      "text": "Explique o conceito de AIOps em 3 parágrafos, incluindo suas principais características e benefícios.",
+      "description": "Explicação técnica média"
+    }
+  ]
+}
