@@ -7,8 +7,8 @@ from typing import List
 
 load_dotenv()
 
-ANTHROPIC_MODELS = ["claude-3-5-sonnet-20241022", "claude-3-haiku-20240307"]
-GOOGLE_MODELS = ["gemini-1.5-pro", "gemini-1.5-flash"]
+ANTHROPIC_MODELS = ["claude-sonnet-4-5-20250929", "claude-haiku-4-5-20251001"]
+GOOGLE_MODELS = ["gemini-3-pro-preview", "gemini-3-flash-preview"]
 
 
 def validate_environment() -> bool:
