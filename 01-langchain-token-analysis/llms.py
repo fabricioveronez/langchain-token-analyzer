@@ -1,8 +1,7 @@
 import os
-from typing import Any, Optional
+from typing import Optional
 from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_core.callbacks import BaseCallbackHandler
 from dataclasses import dataclass
 
 
@@ -21,30 +20,6 @@ class TokenResult:
     def total_tokens(self) -> int:
         """Retorna total de tokens (input + output)"""
         return self.input_tokens + self.output_tokens
-
-
-class TokenCounterCallback(BaseCallbackHandler):
-    """Callback customizado para capturar métricas de tokens"""
-
-    def __init__(self):
-        self.input_tokens = 0
-        self.output_tokens = 0
-
-    def on_llm_end(self, response, **kwargs: Any) -> None:
-        """Captura tokens quando a LLM termina a execução"""
-        # Formato Anthropic (llm_output)
-        if hasattr(response, 'llm_output') and response.llm_output:
-            usage = response.llm_output.get('token_usage', {})
-            self.input_tokens = usage.get('prompt_tokens', 0)
-            self.output_tokens = usage.get('completion_tokens', 0)
-
-        # Formato Google (usage_metadata)
-        for generation in response.generations:
-            if generation and len(generation) > 0:
-                msg = generation[0].message
-                if hasattr(msg, 'usage_metadata') and msg.usage_metadata:
-                    self.input_tokens = msg.usage_metadata.get('input_tokens', 0)
-                    self.output_tokens = msg.usage_metadata.get('output_tokens', 0)
 
 
 class LLMFactory:
@@ -108,18 +83,21 @@ def execute_prompt(
     Returns:
         TokenResult com métricas capturadas ou None em caso de erro
     """
-    callback = TokenCounterCallback()
-
     try:
-        result = model.invoke(prompt_text, config={"callbacks": [callback]})
+        # Invoke sem callbacks - usage_metadata vem automaticamente
+        result = model.invoke(prompt_text)
+
+        # usage_metadata já vem no AIMessage automaticamente
+        # Estrutura: {'input_tokens': 8, 'output_tokens': 21, 'total_tokens': 29, ...}
+        usage = result.usage_metadata if hasattr(result, 'usage_metadata') and result.usage_metadata else {}
 
         return TokenResult(
             provider=provider,
             model=model_name,
             language=language,
             prompt_id=prompt_id,
-            input_tokens=callback.input_tokens,
-            output_tokens=callback.output_tokens,
+            input_tokens=usage.get('input_tokens', 0),
+            output_tokens=usage.get('output_tokens', 0),
             response_text=result.content
         )
     except Exception as e:
