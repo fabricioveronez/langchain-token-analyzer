@@ -1,0 +1,14 @@
+# Core LangChain (v1.x)
+langchain>=1.0.0
+langchain-core>=1.0.0
+langchain-google-genai>=4.0.0
+
+# Streamlit
+streamlit>=1.30.0
+
+# Visualização
+plotly>=5.18.0
+pandas>=2.0.0
+
+# Utilities
+python-dotenv>=1.0.0

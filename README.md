@@ -15,6 +15,7 @@ Este repositório é composto de pastas numeradas, onde cada pasta contém um pr
 | # | Projeto | Descrição |
 |---|---------|-----------|
 | 01 | [langchain-token-analysis](./01-langchain-token-analysis/) | Análise de tokens com LangChain comparando modelos Claude e Gemini em PT/EN |
+| 02 | [context-window-monitor](./02-context-window-monitor/) | Dashboard Streamlit para visualizar crescimento da janela de contexto em conversas com Gemini |
 
 ## Como Usar
 
