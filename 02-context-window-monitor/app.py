@@ -79,14 +79,6 @@ def main():
         st.metric("Total de Tokens", f"{stats['total_tokens']:,}")
         st.metric("Média Tokens/Msg", f"{stats['avg_tokens_per_message']:.1f}")
 
-        # Custo estimado
-        estimated_cost = calculate_cost(
-            stats['total_input_tokens'],
-            stats['total_output_tokens'],
-            stats['model_name']
-        )
-        st.metric("Custo Estimado", f"${estimated_cost:.6f}")
-
         # Progress bar do limite
         if stats['total_tokens'] > 0:
             progress = min(stats['total_tokens'] / token_limit, 1.0)
@@ -107,6 +99,7 @@ def main():
         with chat_container:
             for msg in st.session_state.messages:
                 with st.chat_message(msg['role']):
+                    # content já é string pura garantida pelo chat_manager
                     st.markdown(msg['content'])
                     st.caption(f"🔢 {msg['tokens']:,} tokens")
 

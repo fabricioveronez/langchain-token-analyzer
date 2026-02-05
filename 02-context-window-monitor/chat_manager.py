@@ -42,6 +42,42 @@ class ChatManager:
             temperature=0.7
         )
 
+    def _extract_text_content(self, content) -> str:
+        """
+        Extrai texto puro de qualquer formato de content retornado pelo LangChain.
+
+        Args:
+            content: Pode ser str, list, ou objeto complexo
+
+        Returns:
+            str: Texto puro extraído
+        """
+        # Se já é string, retornar diretamente
+        if isinstance(content, str):
+            return content
+
+        # Se é lista, processar cada elemento
+        if isinstance(content, list):
+            text_parts = []
+            for item in content:
+                # ContentPart ou similar
+                if hasattr(item, 'text'):
+                    text_parts.append(item.text)
+                elif hasattr(item, 'content'):
+                    text_parts.append(str(item.content))
+                elif isinstance(item, str):
+                    text_parts.append(item)
+                else:
+                    text_parts.append(str(item))
+            return ''.join(text_parts)
+
+        # Se tem atributo text
+        if hasattr(content, 'text'):
+            return content.text
+
+        # Fallback: converter para string
+        return str(content)
+
     def _create_user_metrics(self, message: str) -> MessageMetrics:
         """
         Cria métricas para uma mensagem do usuário.
@@ -105,7 +141,7 @@ class ChatManager:
 
         assistant_metrics = MessageMetrics(
             role='assistant',
-            content=result.content,
+            content=self._extract_text_content(result.content),
             input_tokens=usage['input_tokens'],
             output_tokens=usage['output_tokens'],
             total_tokens=usage['total_tokens'],

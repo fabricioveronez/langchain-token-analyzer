@@ -138,7 +138,8 @@ class ContextWindowVisualizer:
 
         data = []
         for i, msg in enumerate(history):
-            preview = msg.content[:50] + '...' if len(msg.content) > 50 else msg.content
+            # content já é string garantida pelo chat_manager
+            preview = msg.content[:200] + '...' if len(msg.content) > 200 else msg.content
 
             data.append({
                 'ID': i + 1,
