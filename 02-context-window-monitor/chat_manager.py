@@ -47,7 +47,7 @@ class ChatManager:
         Extrai texto puro de qualquer formato de content retornado pelo LangChain.
 
         Args:
-            content: Pode ser str, list, ou objeto complexo
+            content: Pode ser str, dict, list, ou objeto complexo
 
         Returns:
             str: Texto puro extraído
@@ -55,6 +55,14 @@ class ChatManager:
         # Se já é string, retornar diretamente
         if isinstance(content, str):
             return content
+
+        # Se é dicionário (formato comum do Gemini: {'type': 'text', 'text': '...', 'extras': {...}})
+        if isinstance(content, dict):
+            if 'text' in content:
+                return content['text']
+            # Fallback para outros formatos de dict
+            if 'content' in content:
+                return str(content['content'])
 
         # Se é lista, processar cada elemento
         if isinstance(content, list):
@@ -65,6 +73,8 @@ class ChatManager:
                     text_parts.append(item.text)
                 elif hasattr(item, 'content'):
                     text_parts.append(str(item.content))
+                elif isinstance(item, dict) and 'text' in item:
+                    text_parts.append(item['text'])
                 elif isinstance(item, str):
                     text_parts.append(item)
                 else:
