@@ -3,10 +3,6 @@ from datetime import datetime
 from typing import List, Dict, Tuple
 from llms import TokenResult
 
-# Constantes para ordem de geração de relatórios
-ANTHROPIC_MODELS = ["claude-3-5-sonnet-20241022", "claude-3-haiku-20240307"]
-GOOGLE_MODELS = ["gemini-1.5-pro", "gemini-1.5-flash"]
-
 
 class TokenStatistics:
     """Calculadora de estatísticas de tokens"""
@@ -81,35 +77,34 @@ class MarkdownReportGenerator:
 
 """
 
+    def _get_models_by_provider(self, provider: str) -> List[str]:
+        """Extrai lista de modelos únicos para um provider a partir dos resultados"""
+        seen = []
+        for r in self.results:
+            if r.provider == provider and r.model not in seen:
+                seen.append(r.model)
+        return seen
+
     def _generate_provider_tables(self) -> str:
         """Gera tabelas de comparação por provider"""
         report = "## 2. Comparação por Provider\n\n"
 
-        # Tabela Anthropic
-        report += "### Anthropic Claude\n\n"
-        report += "| Modelo | Idioma | Média Input | Média Output | Média Total |\n"
-        report += "|--------|--------|-------------|--------------|-------------|\n"
+        for provider, title in [('Anthropic', 'Anthropic Claude'), ('Google', 'Google Gemini')]:
+            models = self._get_models_by_provider(provider)
+            report += f"### {title}\n\n"
+            report += "| Modelo | Idioma | Média Input | Média Output | Média Total |\n"
+            report += "|--------|--------|-------------|--------------|-------------|\n"
 
-        for model in ANTHROPIC_MODELS:
-            for lang in ['pt', 'en']:
-                avg = self.stats.get_average('Anthropic', model, lang)
-                if avg['avg_total'] > 0:
-                    lang_display = 'PT' if lang == 'pt' else 'EN'
-                    report += f"| {model} | {lang_display} | {avg['avg_input']:.0f} | {avg['avg_output']:.0f} | {avg['avg_total']:.0f} |\n"
+            for model in models:
+                for lang in ['pt', 'en']:
+                    avg = self.stats.get_average(provider, model, lang)
+                    if avg['avg_total'] > 0:
+                        lang_display = 'PT' if lang == 'pt' else 'EN'
+                        report += f"| {model} | {lang_display} | {avg['avg_input']:.0f} | {avg['avg_output']:.0f} | {avg['avg_total']:.0f} |\n"
 
-        # Tabela Google
-        report += "\n### Google Gemini\n\n"
-        report += "| Modelo | Idioma | Média Input | Média Output | Média Total |\n"
-        report += "|--------|--------|-------------|--------------|-------------|\n"
+            report += "\n"
 
-        for model in GOOGLE_MODELS:
-            for lang in ['pt', 'en']:
-                avg = self.stats.get_average('Google', model, lang)
-                if avg['avg_total'] > 0:
-                    lang_display = 'PT' if lang == 'pt' else 'EN'
-                    report += f"| {model} | {lang_display} | {avg['avg_input']:.0f} | {avg['avg_output']:.0f} | {avg['avg_total']:.0f} |\n"
-
-        return report + "\n"
+        return report
 
     def _generate_language_comparison(self) -> str:
         """Gera análise de comparação entre idiomas"""
