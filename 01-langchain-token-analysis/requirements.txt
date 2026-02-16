@@ -8,3 +8,7 @@ langchain-google-genai>=4.0.0
 
 # Utilities
 python-dotenv>=1.0.0
+
+# Dashboard
+streamlit>=1.30.0
+plotly>=5.18.0

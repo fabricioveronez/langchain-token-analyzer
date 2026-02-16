@@ -2,7 +2,7 @@
 
 ## Descrição
 
-Projeto educacional que demonstra como capturar e analisar métricas de uso de tokens ao trabalhar com diferentes modelos de IA usando LangChain. Compara o consumo de tokens entre:
+Dashboard interativo com Streamlit que demonstra como capturar e analisar métricas de uso de tokens ao trabalhar com diferentes modelos de IA usando LangChain. Compara o consumo de tokens entre:
 
 - **Providers**: Anthropic (Claude) vs Google (Gemini)
 - **Modelos**: Claude Sonnet, Haiku vs Gemini Pro, Flash
@@ -11,10 +11,10 @@ Projeto educacional que demonstra como capturar e analisar métricas de uso de t
 ## Objetivos de Aprendizado
 
 - Entender como o LangChain captura métricas de tokens
-- Aprender a usar callbacks personalizados para monitoramento
 - Comparar consumo de tokens entre diferentes providers
 - Analisar diferenças de tokenização entre idiomas
 - Aplicar boas práticas de análise de custos de LLMs
+- Visualizar dados com Streamlit e Plotly
 
 ## Requisitos
 
@@ -45,7 +45,7 @@ Projeto educacional que demonstra como capturar e analisar métricas de uso de t
 6. Configure suas API keys (veja seção abaixo)
 7. Execute:
    ```bash
-   python main.py
+   streamlit run main.py
    ```
 
 ### Opção 2: Instalação Local
@@ -95,15 +95,21 @@ GOOGLE_API_KEY=sua-chave-google-aqui
 - **Anthropic**: https://console.anthropic.com/
 - **Google**: https://makersuite.google.com/app/apikey
 
-### Executar Análise
+### Executar Dashboard
 
 ```bash
-python main.py
+streamlit run main.py
 ```
 
-### Ver Resultados
+O dashboard será aberto automaticamente no navegador.
 
-O relatório será gerado em `results/report.md`
+### Usar o Dashboard
+
+1. Na barra lateral, selecione os **providers** desejados (Anthropic, Google ou ambos)
+2. Selecione os **modelos** de cada provider
+3. Selecione os **idiomas** (Português, Inglês ou ambos)
+4. Clique em **Executar Análise**
+5. Visualize os resultados: métricas, tabelas, gráficos e respostas completas
 
 ## Estrutura de Arquivos
 
@@ -112,44 +118,27 @@ O relatório será gerado em `results/report.md`
 ├── README.md              # Este arquivo
 ├── requirements.txt       # Dependências Python
 ├── .env.example          # Template de configuração
-├── main.py               # Script principal de orquestração
+├── main.py               # Dashboard Streamlit
 ├── prompts.py            # Gerenciamento de prompts
-├── llms.py               # Modelos LLM e callbacks
-├── report.py             # Geração de relatórios
-└── results/              # Relatórios gerados
-    └── report.md
+└── llms.py               # Modelos LLM e execução
 ```
 
 ### Módulos
 
-- **main.py**: Orquestra a execução dos testes, validando ambiente e coordenando a execução dos modelos
+- **main.py**: Dashboard Streamlit com sidebar de configuração, métricas, tabelas comparativas, gráficos Plotly e respostas completas
 - **prompts.py**: Define e gerencia prompts em múltiplos idiomas usando dataclasses Python
-- **llms.py**: Implementa factory para criação de modelos LLM, callbacks para captura de tokens e função de execução
-- **report.py**: Calcula estatísticas de tokens e gera relatórios formatados em Markdown
+- **llms.py**: Implementa factory para criação de modelos LLM e função de execução com captura de tokens
 
 ## Conceitos Principais
 
-### Callbacks do LangChain
+### Métricas de Tokens no LangChain
 
-O LangChain fornece callbacks para capturar métricas durante a execução. Neste projeto, usamos um callback personalizado:
+O LangChain captura métricas de tokens automaticamente via `usage_metadata` no `AIMessage`:
 
 ```python
-from langchain_core.callbacks import BaseCallbackHandler
-
-class TokenCounterCallback(BaseCallbackHandler):
-    def __init__(self):
-        self.input_tokens = 0
-        self.output_tokens = 0
-
-    def on_llm_end(self, response, **kwargs):
-        # Captura tokens ao final da execução
-        # Extrai informações de usage_metadata
-        pass
-
-# Uso
-callback = TokenCounterCallback()
-result = model.invoke(prompt, config={"callbacks": [callback]})
-print(f"Tokens usados: {callback.input_tokens} + {callback.output_tokens}")
+result = model.invoke(prompt)
+usage = result.usage_metadata
+# {'input_tokens': 45, 'output_tokens': 312, 'total_tokens': 357}
 ```
 
 ### Tokenização
@@ -166,7 +155,7 @@ Diferentes modelos tokenizam texto de forma diferente:
 
 ### Métricas Capturadas
 
-Para cada execução, o script captura:
+Para cada execução, o dashboard captura e exibe:
 
 1. **Input tokens**: Tokens do prompt enviado
 2. **Output tokens**: Tokens da resposta gerada
@@ -179,77 +168,13 @@ Estas métricas são essenciais para:
 
 ## Resultados Esperados
 
-Ao executar a análise, você deverá observar:
+Ao executar a análise no dashboard, você verá:
 
-1. **Português vs Inglês**: Português usa consistentemente mais tokens (15-35% a mais)
-2. **Claude vs Gemini**: Diferenças na tokenização entre providers
-3. **Modelos grandes vs pequenos**: Mesma tokenização, mas respostas diferentes em qualidade/tamanho
-4. **Eficiência**: Comparação de tokens por modelo para o mesmo prompt
-
-### Exemplo de Saída
-
-```
-=== Análise de Tokens com LangChain ===
-
-Carregando prompts...
-
---- Testando modelos Anthropic ---
-
-Modelo: claude-3-5-sonnet-20241022
-  - Executando em português...
-    ✓ Input: 45, Output: 312, Total: 357
-  - Executando em inglês...
-    ✓ Input: 38, Output: 289, Total: 327
-
-Modelo: claude-3-haiku-20240307
-  - Executando em português...
-    ✓ Input: 45, Output: 245, Total: 290
-  - Executando em inglês...
-    ✓ Input: 38, Output: 221, Total: 259
-
---- Testando modelos Google ---
-...
-
---- Gerando relatório ---
-
-Relatório gerado em: results/report.md
-
-✅ Análise concluída com sucesso!
-```
-
-## Interpretando o Relatório
-
-O relatório `results/report.md` contém:
-
-### 1. Resumo Executivo
-Visão geral da análise realizada
-
-### 2. Comparação por Provider
-Tabelas com médias de tokens por modelo e idioma
-
-### 3. Comparação de Idiomas
-Percentual de diferença entre português e inglês
-
-### 4. Insights
-Observações automáticas sobre os padrões encontrados
-
-### 5. Análise Detalhada
-Análise específica do prompt testado
-
-### 6. Conclusões
-Recomendações práticas baseadas nos dados
-
-## Próximos Passos
-
-Para expandir este projeto:
-
-1. **Mais providers**: Adicionar OpenAI, Cohere, etc.
-2. **Análise de custos**: Multiplicar tokens pelo preço por token
-3. **Mais idiomas**: Testar espanhol, francês, alemão
-4. **Visualizações**: Criar gráficos com matplotlib/seaborn
-5. **Análise de latência**: Medir tempo de resposta
-6. **Diferentes tipos de prompts**: Comparar prompts curtos, médios e longos
-7. **Streaming**: Testar uso de tokens com respostas em streaming
+1. **Métricas resumo**: Total de tokens, modelos testados e número de execuções
+2. **Tabela comparativa**: Detalhamento de tokens por modelo e idioma
+3. **Gráfico de barras**: Comparação visual de input/output tokens
+4. **Comparação de idiomas**: Diferença percentual entre PT e EN por provider
+5. **Respostas completas**: Texto gerado por cada modelo em expanders
 
 ## Troubleshooting
 
@@ -278,7 +203,8 @@ Verifique se suas API keys são válidas e estão ativas:
 - [Documentação LangChain](https://python.langchain.com/)
 - [Anthropic API Docs](https://docs.anthropic.com/)
 - [Google AI Studio](https://ai.google.dev/)
-- [Guia de Tokenização](https://platform.openai.com/tokenizer)
+- [Streamlit Docs](https://docs.streamlit.io/)
+- [Plotly Docs](https://plotly.com/python/)
 
 ## Licença
 
