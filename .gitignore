@@ -24,11 +24,10 @@ ENV/
 .ipynb_checkpoints/
 
 # Resultados de projetos
-*/results/*.md
-*/results/*.json
-*/results/*.png
-*/results/*.html
-!*/results/.gitkeep
+**/results/*.md
+**/results/*.json
+**/results/*.png
+**/results/*.html
 
 # OS
 .DS_Store
