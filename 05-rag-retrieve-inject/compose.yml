@@ -1,0 +1,12 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8501:8501"
+    # API key do Gemini (GOOGLE_API_KEY). Reaproveita o .env da raiz do repositório.
+    env_file:
+      - .env
+    # Persiste a base vetorial (data/base.db) e os documentos no host.
+    # A base populada na fase offline sobrevive a "down"/"up".
+    volumes:
+      - ./data:/app/data

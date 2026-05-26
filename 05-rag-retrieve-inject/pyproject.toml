@@ -1,0 +1,12 @@
+[project]
+name = "rag-retrieve-inject"
+version = "0.1.0"
+description = "Demonstração de RAG (embed -> persist -> retrieve -> inject -> generate) com Streamlit, Gemini e sqlite-vec"
+requires-python = ">=3.10"
+dependencies = [
+    "streamlit>=1.30.0",
+    "langchain-google-genai>=4.0.0",
+    "sqlite-vec>=0.1.0",
+    "python-dotenv>=1.0.0",
+    "numpy>=1.26",
+]

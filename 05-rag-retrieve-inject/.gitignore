@@ -1,0 +1,3 @@
+# Base vetorial gerada em runtime (fase offline). Os documentos-fonte ficam em data/docs/.
+data/base.db
+.env

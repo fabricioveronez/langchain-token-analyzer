@@ -17,6 +17,8 @@ Este repositório é composto de pastas numeradas, onde cada pasta contém um pr
 | 01 | [langchain-token-analysis](./01-langchain-token-analysis/) | Análise de tokens com LangChain comparando modelos Claude e Gemini em PT/EN |
 | 02 | [context-window-monitor](./02-context-window-monitor/) | Dashboard Streamlit para visualizar crescimento da janela de contexto em conversas com Gemini |
 | 03 | [temperature-topk-topp](./03-temperature-topk-topp/) | Dashboard Streamlit para explorar parâmetros de sampling (temperature, top_k, top_p) com Gemini 3 Pro |
+| 04 | [long-term-memory](./04-long-term-memory/) | Demonstração de memória de longo prazo (persiste entre sessões) com Streamlit + Gemini, usando uv |
+| 05 | [rag-retrieve-inject](./05-rag-retrieve-inject/) | Demo de RAG (embed→persist→retrieve→inject) com Streamlit, Gemini e sqlite-vec |
 
 ## Como Usar
 
